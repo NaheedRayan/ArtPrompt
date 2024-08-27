@@ -7,6 +7,8 @@ import boto3
 import json
 import time
 
+from mlc_llm import MLCEngine
+
 
 gpt_apis = [
     'your-api-keys'
@@ -14,6 +16,67 @@ gpt_apis = [
 gemini_apis = [
     "your-api-keys",
 ]
+
+class MLC:
+    def __init__(self, model_name, temperature=0, seed=0):
+        self.model_name = model_name
+        self.engine = MLCEngine(model_name)
+        self.T = temperature
+        self.seed = seed
+
+    def __call__(self, prompt, n:int=1, debug=False, **kwargs):
+        prompt = [{'role': 'user', 'content': prompt}]
+        if debug:
+            return self.engine.chat.completions.create(
+                messages=prompt,
+                model=self.model_name,
+                temperature=self.T,
+                seed=self.seed,
+                stream=False,  # Assuming `debug` mode doesn't need streaming
+                **kwargs
+            )
+        else:
+            return self.call_wrapper(
+                messages=prompt,
+                model=self.model_name,
+                temperature=self.T,
+                seed=self.seed,
+                **kwargs
+            )
+
+    @retry(wait=wait_chain(*[wait_fixed(3) for _ in range(3)] +
+                            [wait_fixed(5) for _ in range(2)] +
+                            [wait_fixed(10)]))  # Retry strategy
+    def call_wrapper(self, **kwargs):
+        return self.engine.chat.completions.create(stream=False, **kwargs)
+
+    def resp_parse(self, response) -> list:
+        n = len(response.choices)
+        return [response.choices[i].message.content for i in range(n)]
+
+    def eval_call_wrapper(self, prompt, **kwargs) -> Any:
+        retry_count = 0
+        stop = False
+        while retry_count < 5 and not stop:
+            try:
+                return self.__call__(prompt, debug=True, **kwargs)
+            except Exception as e:
+                err = str(e)
+                if 'repetitive pattern' in err:
+                    print(f"error: {err}, use default fail eval")
+                    stop = True
+                    return None
+                else:
+                    print(f"error exception: {e}")
+                    print(kwargs)
+                    time.sleep(2 ** retry_count + 1)
+                    retry_count += 1
+
+    def eval_call(self, prompt, n: int = 1, debug=False, **kwargs) -> Any:
+        if debug:
+            return self.__call__(prompt, debug=True, n=n, **kwargs)
+        else:
+            return self.eval_call_wrapper(prompt, n=n, **kwargs)
 
 class GPT:
     def __init__(self, model_name, temperature=0, seed=0, api_idx=0):
@@ -228,6 +291,8 @@ def load_model(model_name, api_idx, **kwargs):
         if "llama-vllm" in model_name:
             return Llama_vllm(model_name, **kwargs)
         return Llama_api(model_name, **kwargs)
+    elif "mlc" in model_name or "mistral" in model_name:  # Example condition for MLC-based models
+        return MLC(model_name, **kwargs)
     else:
         raise ValueError(f"model_name invalid")
 

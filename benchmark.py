@@ -117,7 +117,8 @@ def main(args):
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
-    args.add_argument("--model", type=str, default="gpt-4-0613", help="Model name for evaluation")
+    args.add_argument("--model", type=str, default="HF://mlc-ai/Mistral-7B-Instruct-v0.2-q4f16_1-MLC", help="Model name for evaluation")
+    # args.add_argument("--model", type=str, default="gpt-4-0613", help="Model name for evaluation")
     args.add_argument("--task", type=str, default="s", help="s or l")
     args.add_argument("--num", type=int, default=-1, help="Number of samples to run inference")
     args.add_argument("--t", type=float, default=0, help="Temperature for inference")
