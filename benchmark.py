@@ -122,7 +122,7 @@ if __name__ == "__main__":
     args.add_argument("--task", type=str, default="s", help="s or l")
     args.add_argument("--num", type=int, default=-1, help="Number of samples to run inference")
     args.add_argument("--t", type=float, default=0, help="Temperature for inference")
-    args.add_argument("--ft", type=float, default='s', help="Temperature for inference") # added new
+    args.add_argument("--ft", type=str, default='s', help="Temperature for inference") # added new
     args.add_argument("--ps", type=str, default="zs-s-easy", help="Prompt setting for inference")
     args.add_argument("--mp", type=int, default=1, help="multi-processing for inference")
     args.add_argument("--api", type=int, default=0, help="index for api pool")
