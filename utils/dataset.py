@@ -23,7 +23,8 @@ def parse(dataset_file):
 def load_dataset(task, ft=None):
     if ft is None:
         if task == "s":
-            file_path = "data/ViTC/vitc-s.json"
+            # file_path = "data/ViTC/vitc-s.json"
+            file_path = "dataset/ViTC/vitc-s.json"
         elif task == "l":
             file_path = "data/ViTC/vitc-l.json"
         elif task == "mnist":
@@ -34,6 +35,9 @@ def load_dataset(task, ft=None):
     # test split for fine-tuning validation
         if ft == "s":
             file_path = "data/ViTC/vitc-s-test.json"
+            # file_path = "dataset/ViTC/vitc-s.json"
+
+
         elif ft == "s-sample":
             file_path = "data/ViTC/vitc-s-test_unseensamples.json"
         elif ft == "s-font":
