@@ -74,7 +74,7 @@ def main(args):
                 prompt = task_prompt(args.ps, ascii_repr, label, args.model)
                 response = model(prompt, n=1, debug=args.debug)
 
-                print(response)
+                # print(response)
 
                 res.append(model.resp_parse(response))
 
