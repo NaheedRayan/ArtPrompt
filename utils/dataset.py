@@ -26,9 +26,9 @@ def load_dataset(task, ft=None):
             # file_path = "data/ViTC/vitc-s.json"
             file_path = "dataset/ViTC/vitc-s.json"
         elif task == "l":
-            file_path = "data/ViTC/vitc-l.json"
+            file_path = "dataset/ViTC/vitc-l.json"
         elif task == "mnist":
-            file_path = "data/ViTC/vitc-mnisttest.json"
+            file_path = "dataset/ViTC/vitc-mnisttest.json"
         else:
             raise ValueError("task should be s, l or mnist")
     else:
@@ -39,9 +39,9 @@ def load_dataset(task, ft=None):
 
 
         elif ft == "s-sample":
-            file_path = "data/ViTC/vitc-s-test_unseensamples.json"
+            file_path = "dataset/ViTC/vitc-s-test_unseensamples.json"
         elif ft == "s-font":
-            file_path = "data/ViTC/vitc-s-test_unseenfonts.json"
+            file_path = "dataset/ViTC/vitc-s-test_unseenfonts.json"
         else:
             raise ValueError("task should be s for fine-tuning validation")
     
